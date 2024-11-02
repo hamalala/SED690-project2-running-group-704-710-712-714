@@ -1,8 +1,6 @@
 import json
 import streamlit as st
 import pickle
-import numpy as np
-import random
 
 # Function to load a model from a pickle file
 def load_model(file_path):
@@ -44,9 +42,6 @@ if st.session_state.get('model_loaded', False):
     label_encoders = st.session_state.model['label_encoders']
     data_types = st.session_state.model['data_types']
 
-    # Store the randomly generated values for display
-    random_feature_values = {}
-
     for feature in st.session_state.model['features']:
         data_type = data_types[feature]
 
@@ -62,17 +57,17 @@ if st.session_state.get('model_loaded', False):
             if data_type['Data Type'] == 'int64':
                 input_value = st.number_input(
                     label=f"Enter value for {feature}:",
-                    format="%d",
-                    step=1,
+                    format="%d",  # Ensure integer format
+                    step=1,  # Increment by 1 for integers
                     key=feature,
-                    value=0
+                    value=0  # Default value, can be adjusted as needed
                 )
             else:  # For float values
                 input_value = st.number_input(
                     label=f"Enter value for {feature}:",
                     format="%f",
                     key=feature,
-                    value=0.0
+                    value=0.0  # Default value for float
                 )
             input_values[feature] = input_value  # Store the input value in a dictionary
         else:
@@ -90,63 +85,18 @@ if st.session_state.get('model_loaded', False):
                 # Directly use the input value for numerical types
                 encoded_input[feature] = value
 
-        # Prepare input for prediction
+        # Prepare input for prediction (ensure correct order and shape)
         input_data = [encoded_input[feature] for feature in st.session_state.model['features']]
 
-        # Random sampling until prediction equals 1
-        found_prediction = False
-
-        while not found_prediction:
-            # Generate random values based on data types
-            for feature in st.session_state.model['features']:
-                if feature in label_encoders:
-                    # For categorical features, randomly select from original labels
-                    random_value = random.choice(label_encoders[feature].classes_)
-                elif data_types[feature]['Data Type'] == 'int64':
-                    # Random integer value (adjust the range as necessary)
-                    random_value = random.randint(0, 100)  # Example range; modify as needed
-                elif data_types[feature]['Data Type'] == 'float64':
-                    # Random float value (adjust the range as necessary)
-                    random_value = random.uniform(0.0, 100.0)  # Example range; modify as needed
-                else:
-                    # For text or other types, use a placeholder or random string
-                    random_value = "random_string"  # Modify this as needed
-
-                random_feature_values[feature] = random_value
-
-            # Encode the random values for prediction
-            random_encoded_input = {}
-            for feature, value in random_feature_values.items():
-                if feature in label_encoders:
-                    random_encoded_input[feature] = label_encoders[feature].transform([value])[0]
-                else:
-                    random_encoded_input[feature] = value
-
-            # Prepare input for prediction
-            random_input_data = [random_encoded_input[feature] for feature in st.session_state.model['features']]
-            prediction = st.session_state.model['model'].predict([random_input_data])  # Wrap in a list
-
-            if prediction[0] == 1:
-                found_prediction = True  # Stop if prediction equals 1
-
-        # Display the feature values that produced a prediction of 1
-        st.write("**Random Feature Values that resulted in Prediction of 1:**")
-        for feature, value in random_feature_values.items():
+        # Use the model to predict
+        model = st.session_state.model['model']
+        prediction = model.predict([input_data])  # Wrap input_data in a list for a single prediction
+        
+        # Display the feature values and the prediction result
+        st.write("**Collected Input Values:**")
+        for feature, value in input_values.items():
             st.write(f"{feature}: {value}")
-
-        # Reset the input values to the random values that produced the prediction of 1
-        for feature in random_feature_values:
-            input_values[feature] = random_feature_values[feature]
-            # Reset the Streamlit input fields
-            if feature in label_encoders:
-                st.session_state[feature] = random_feature_values[feature]  # Reset selectbox
-            elif data_types[feature]['Data Type'] == 'int64':
-                st.session_state[feature] = random_feature_values[feature]  # Reset number input
-            elif data_types[feature]['Data Type'] == 'float64':
-                st.session_state[feature] = random_feature_values[feature]  # Reset number input
-            else:
-                st.session_state[feature] = random_feature_values[feature]  # Reset text input
-
+        
         st.write("**Prediction Result:**", prediction[0])  # Display the prediction
 else:
     st.write("No model loaded.")
