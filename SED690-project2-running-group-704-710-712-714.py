@@ -40,7 +40,7 @@ if st.session_state.get('model_loaded', False):
 
     
     st.write("**Features**")
-    label_encoders = {}
+    label_encoders = st.session_state.model['label_encoders']
 
     for feature in st.session_state.model['features'] :    
         if label_encoders[feature] :
