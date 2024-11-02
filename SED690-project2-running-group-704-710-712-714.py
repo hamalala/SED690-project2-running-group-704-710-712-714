@@ -31,7 +31,6 @@ if uploaded_file is not None:
 if st.session_state.get('model_loaded', False):
     input_values = {}
 
-
     st.write("**Current model loaded:**", f"{st.session_state.model['Model name']}")
     st.write("**Evaluation**")
     st.write("**Accuracy:**", f"{st.session_state.model['Accuracy']:.3f}")
@@ -39,27 +38,26 @@ if st.session_state.get('model_loaded', False):
     st.write("**Recall:**", f"{st.session_state.model['Recall']:.3f}")
     st.write("**F1-Score:**", f"{st.session_state.model['F1-Score']:.3f}")
 
-    
     st.write("**Features**")
     label_encoders = st.session_state.model['label_encoders']
     data_types = st.session_state.model['data_types']
 
-    for feature in st.session_state.model['features'] :
-        data_type = data_types[feature] 
+    for feature in st.session_state.model['features']:
+        data_type = data_types[feature]
 
-
-        if feature in label_encoders :
+        if feature in label_encoders:
             original_labels = label_encoders[feature].classes_
-            selected_label = st.selectbox("Choose value for {feature}:", original_labels, key=feature)
+            selected_label = st.selectbox(f"Choose value for {feature}:", original_labels, key=feature)
             input_values[feature] = selected_label  # Store the input value in a dictionary
-        elif len(data_type['Unique Values']) > 0 :
-            selected_label = st.selectbox("Choose value for {feature}:", data_type['Unique Values'], key=feature)
+        elif len(data_type['Unique Values']) > 0:
+            selected_label = st.selectbox(f"Choose value for {feature}:", data_type['Unique Values'], key=feature)
             input_values[feature] = selected_label  # Store the input value in a dictionary
         elif data_type['Data Type'] in ['int64', 'float64']:
             # Create a number input for this column
+            number_format = "%d" if data_type['Data Type'] == 'int64' else "%f"
             input_value = st.number_input(
                 label=f"Enter value for {feature}:",
-                format="%f" if data_type['Data Type'] == 'float64' else "%d", 
+                format=number_format,
                 key=feature
             )
             input_values[feature] = input_value  # Store the input value in a dictionary
@@ -68,7 +66,24 @@ if st.session_state.get('model_loaded', False):
             input_values[feature] = input_value  # Store the input value in a dictionary
 
     if st.button("Submit"):
-        st.write("Collected Input Values:")
-        st.write(input_values)
+        # Encode input values using label encoders
+        encoded_input = {}
+        for feature, value in input_values.items():
+            if feature in label_encoders:
+                # Use the label encoder to transform the selected label
+                encoded_input[feature] = label_encoders[feature].transform([value])[0]
+            else:
+                # Directly use the input value for numerical types
+                encoded_input[feature] = value
+
+        # Prepare input for prediction (ensure correct order and shape)
+        input_data = [encoded_input[feature] for feature in st.session_state.model['features']]
+
+        # Use the model to predict
+        model = st.session_state.model['model']
+        prediction = model.predict([input_data])  # Wrap input_data in a list for a single prediction
+        
+        # Display the prediction result
+        st.write("**Prediction Result:**", prediction[0])  # Display the prediction
 else:
     st.write("No model loaded.")
