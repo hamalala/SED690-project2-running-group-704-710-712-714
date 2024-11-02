@@ -44,6 +44,9 @@ if st.session_state.get('model_loaded', False):
     label_encoders = st.session_state.model['label_encoders']
     data_types = st.session_state.model['data_types']
 
+    # Store the randomly generated values for display
+    random_feature_values = {}
+
     for feature in st.session_state.model['features']:
         data_type = data_types[feature]
 
@@ -92,7 +95,6 @@ if st.session_state.get('model_loaded', False):
 
         # Random sampling until prediction equals 1
         found_prediction = False
-        random_feature_values = {}
 
         while not found_prediction:
             # Generate random values based on data types
@@ -131,6 +133,19 @@ if st.session_state.get('model_loaded', False):
         st.write("**Random Feature Values that resulted in Prediction of 1:**")
         for feature, value in random_feature_values.items():
             st.write(f"{feature}: {value}")
+
+        # Reset the input values to the random values that produced the prediction of 1
+        for feature in random_feature_values:
+            input_values[feature] = random_feature_values[feature]
+            # Reset the Streamlit input fields
+            if feature in label_encoders:
+                st.session_state[feature] = random_feature_values[feature]  # Reset selectbox
+            elif data_types[feature]['Data Type'] == 'int64':
+                st.session_state[feature] = random_feature_values[feature]  # Reset number input
+            elif data_types[feature]['Data Type'] == 'float64':
+                st.session_state[feature] = random_feature_values[feature]  # Reset number input
+            else:
+                st.session_state[feature] = random_feature_values[feature]  # Reset text input
 
         st.write("**Prediction Result:**", prediction[0])  # Display the prediction
 else:
