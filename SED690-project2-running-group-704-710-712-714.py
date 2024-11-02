@@ -45,10 +45,10 @@ if st.session_state.get('model_loaded', False):
     for feature in st.session_state.model['features'] :    
         if feature in label_encoders :
             original_labels = label_encoders[feature].classes_
-            selected_label = st.selectbox("Choose value for {feature}:", original_labels)
+            selected_label = st.selectbox("Choose value for {feature}:", original_labels, key=feature)
             input_values[feature] = selected_label  # Store the input value in a dictionary
         else:
-            input_value = st.text_input(f"Enter value for {feature}:")
+            input_value = st.text_input(f"Enter value for {feature}:", key=feature)
             input_values[feature] = input_value  # Store the input value in a dictionary
 
     if st.button("Submit"):
