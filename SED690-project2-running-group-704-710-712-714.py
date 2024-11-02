@@ -1,3 +1,4 @@
+import json
 import streamlit as st
 import pickle
 
@@ -45,6 +46,8 @@ if st.session_state.get('model_loaded', False):
 
     for feature in st.session_state.model['features'] :
         data_type = data_types[feature] 
+
+        st.write(json.dumps(data_type))
         if feature in label_encoders :
             original_labels = label_encoders[feature].classes_
             selected_label = st.selectbox("Choose value for {feature}:", original_labels, key=feature)
