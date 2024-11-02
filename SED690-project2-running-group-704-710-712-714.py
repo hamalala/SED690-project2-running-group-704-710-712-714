@@ -54,12 +54,21 @@ if st.session_state.get('model_loaded', False):
             input_values[feature] = selected_label  # Store the input value in a dictionary
         elif data_type['Data Type'] in ['int64', 'float64']:
             # Create a number input for this column
-            number_format = "%d" if data_type['Data Type'] == 'int64' else "%f"
-            input_value = st.number_input(
-                label=f"Enter value for {feature}:",
-                format=number_format,
-                key=feature
-            )
+            if data_type['Data Type'] == 'int64':
+                input_value = st.number_input(
+                    label=f"Enter value for {feature}:",
+                    format="%d",  # Ensure integer format
+                    step=1,  # Increment by 1 for integers
+                    key=feature,
+                    value=0  # Default value, can be adjusted as needed
+                )
+            else:  # For float values
+                input_value = st.number_input(
+                    label=f"Enter value for {feature}:",
+                    format="%f",
+                    key=feature,
+                    value=0.0  # Default value for float
+                )
             input_values[feature] = input_value  # Store the input value in a dictionary
         else:
             input_value = st.text_input(f"Enter value for {feature}:", key=feature)
