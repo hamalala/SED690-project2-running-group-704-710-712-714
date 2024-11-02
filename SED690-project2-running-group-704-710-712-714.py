@@ -6,7 +6,7 @@ import pickle
 def load_model(file_path):
     with open(file_path, 'rb') as file:
         return pickle.load(file)
-    
+
 st.title("Automate Imbalance Prediction")
 st.write("Group: 704-710-712-714")
 st.write("\n\n")
@@ -83,7 +83,11 @@ if st.session_state.get('model_loaded', False):
         model = st.session_state.model['model']
         prediction = model.predict([input_data])  # Wrap input_data in a list for a single prediction
         
-        # Display the prediction result
+        # Display the feature values and the prediction result
+        st.write("**Collected Input Values:**")
+        for feature, value in input_values.items():
+            st.write(f"{feature}: {value}")
+        
         st.write("**Prediction Result:**", prediction[0])  # Display the prediction
 else:
     st.write("No model loaded.")
