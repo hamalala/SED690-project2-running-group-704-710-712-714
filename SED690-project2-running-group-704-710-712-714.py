@@ -9,7 +9,7 @@ def load_model(file_path):
 # Check if the model is already in session state
 if 'model' not in st.session_state:
     # Load default model from a pickle file
-    default_model_path = 'default_model.pkl'  # Replace with your model file path
+    default_model_path = 'RandomForest with out imbalance.pkl'  # Replace with your model file path
     st.session_state.model = load_model(default_model_path)
     st.session_state.model_loaded = True
     st.success("Loaded default model.")
