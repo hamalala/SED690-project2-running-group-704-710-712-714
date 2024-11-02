@@ -5,6 +5,10 @@ import pickle
 def load_model(file_path):
     with open(file_path, 'rb') as file:
         return pickle.load(file)
+    
+st.title("Imbalance")
+st.write("Group: 704-710-712-714")
+st.write("\n\n")
 
 # Check if the model is already in session state
 if 'model' not in st.session_state:
@@ -24,6 +28,17 @@ if uploaded_file is not None:
 
 # Display the model status
 if st.session_state.get('model_loaded', False):
-    st.write("Current model loaded:", st.session_state.model['Model name'])
+    st.write("**Current model loaded:**", f"{st.session_state.model['Model name']}")
+    st.write("**Evaluation**")
+    st.write("**Accuracy:**", f"{st.session_state.model['Accuracy']:.3f}")
+    st.write("**Precision:**", f"{st.session_state.model['Precision']:.3f}")
+    st.write("**Recall:**", f"{st.session_state.model['Recall']:.3f}")
+    st.write("**F1-Score:**", f"{st.session_state.model['F1-Score']:.3f}")
+
+    
+    st.write("**Features**")
+    for feature in st.session_state.model['features'] :       
+        st.write(f"{feature}")
+
 else:
     st.write("No model loaded.")
