@@ -28,6 +28,9 @@ if uploaded_file is not None:
 
 # Display the model status
 if st.session_state.get('model_loaded', False):
+    input_values = {}
+
+
     st.write("**Current model loaded:**", f"{st.session_state.model['Model name']}")
     st.write("**Evaluation**")
     st.write("**Accuracy:**", f"{st.session_state.model['Accuracy']:.3f}")
@@ -37,8 +40,19 @@ if st.session_state.get('model_loaded', False):
 
     
     st.write("**Features**")
-    for feature in st.session_state.model['features'] :       
-        st.write(f"{feature}")
+    label_encoders = {}
 
+    for feature in st.session_state.model['features'] :    
+        if label_encoders[feature] :
+            original_labels = label_encoders[feature].classes_
+            selected_label = st.selectbox("Choose value for {feature}:", original_labels)
+            input_values[feature] = selected_label  # Store the input value in a dictionary
+        else:
+            input_value = st.text_input(f"Enter value for {feature}:")
+            input_values[feature] = input_value  # Store the input value in a dictionary
+
+    if st.button("Submit"):
+        st.write("Collected Input Values:")
+        st.write(input_values)
 else:
     st.write("No model loaded.")
