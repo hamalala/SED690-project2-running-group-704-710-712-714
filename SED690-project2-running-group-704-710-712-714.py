@@ -49,7 +49,7 @@ if st.session_state.get('model_loaded', False):
             original_labels = label_encoders[feature].classes_
             selected_label = st.selectbox("Choose value for {feature}:", original_labels, key=feature)
             input_values[feature] = selected_label  # Store the input value in a dictionary
-        elif len(data_type['Unique Values']) > 0 :
+        elif data_type['Unique Values'].apply(len) > 0:
             selected_label = st.selectbox("Choose value for {feature}:", data_type['Unique Values'], key=feature)
             input_values[feature] = selected_label  # Store the input value in a dictionary
         elif data_type['Data Type'] in ['int64', 'float64']:
