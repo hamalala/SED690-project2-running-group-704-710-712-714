@@ -1,6 +1,0 @@
-[theme]
-primaryColor = "#F39C12"  # Customize as needed
-backgroundColor = "#FFFFFF"  # Set background color for light mode
-secondaryBackgroundColor = "#F0F0F0"  # Light gray for secondary backgrounds
-textColor = "#000000"  # Black text color
-font = "sans serif"  # Change font if needed
