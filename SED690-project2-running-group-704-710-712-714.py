@@ -107,7 +107,7 @@ if st.session_state.get('model_loaded', False):
             st.write(f"{feature}: {value}")
         
         # st.write("**Prediction Result:**", prediction[0])  # Display the prediction
-
+        target_variable = st.session_state.model['target']
         if target_variable in label_encoders:
             # Decode the prediction using the label encoder
             prediction_label = label_encoders[target_variable].inverse_transform(prediction)[0]
