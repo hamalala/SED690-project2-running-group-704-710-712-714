@@ -2,13 +2,14 @@ import json
 import streamlit as st
 import pickle
 
+
 # กำหนด URL หรือเส้นทางของภาพพื้นหลัง 
-background_image_url = "https://images5.alphacoders.com/373/thumb-1920-373394.png" 
+background_image_url = "https://wallpaperboat.com/wp-content/uploads/2020/12/14/63760/gears-28-920x518.jpg"
 # กำหนดสีที่ต้องการ 
-text_color = "#CC3300" 
+text_color = "#000000" 
 # สีที่คุณต้องการ 
 # ใส่ CSS สำหรับพื้นหลังและสีตัวอักษร 
-st.markdown( f""" <style> .stApp {{ background-image: url('{background_image_url}'); background-size: cover; background-position: center; height: 100vh; }} h1, h2, h3, p, div {{ color: {text_color} !important; }} </style> """, unsafe_allow_html=True )
+st.markdown( f""" <style> .stApp {{ background-image: url('{background_image_url}'); background-size: cover; background-position: center; height: 100vh; }} h1, h2, h3, p, div {{ color: {text_color} !important; }}.block-container{{background-color: rgb(225 225 225 / 50%);box-shadow: 2px 5px 15px rgba(0, 0, 0, 0.3);}} </style> """, unsafe_allow_html=True )
 
 # Function to load a model from a pickle file
 def load_model(file_path):
@@ -105,6 +106,16 @@ if st.session_state.get('model_loaded', False):
         for feature, value in input_values.items():
             st.write(f"{feature}: {value}")
         
-        st.write("**Prediction Result:**", prediction[0])  # Display the prediction
+        # st.write("**Prediction Result:**", prediction[0])  # Display the prediction
+
+        if target_variable in label_encoders:
+            # Decode the prediction using the label encoder
+            prediction_label = label_encoders[target_variable].inverse_transform(prediction)[0]
+        else:
+            # If no label encoder, just use the raw prediction
+            prediction_label = prediction[0]
+        
+        # Display the prediction result
+        st.write("**Prediction Result:**", prediction_label) 
 else:
     st.write("No model loaded.")
