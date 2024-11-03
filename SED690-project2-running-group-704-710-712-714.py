@@ -2,6 +2,14 @@ import json
 import streamlit as st
 import pickle
 
+# กำหนด URL หรือเส้นทางของภาพพื้นหลัง 
+background_image_url = "https://images5.alphacoders.com/373/thumb-1920-373394.png" 
+# กำหนดสีที่ต้องการ 
+text_color = "#CC3300" 
+# สีที่คุณต้องการ 
+# ใส่ CSS สำหรับพื้นหลังและสีตัวอักษร 
+st.markdown( f""" <style> .stApp {{ background-image: url('{background_image_url}'); background-size: cover; background-position: center; height: 100vh; }} h1, h2, h3, p, div {{ color: {text_color} !important; }} </style> """, unsafe_allow_html=True )
+
 # Function to load a model from a pickle file
 def load_model(file_path):
     with open(file_path, 'rb') as file:
