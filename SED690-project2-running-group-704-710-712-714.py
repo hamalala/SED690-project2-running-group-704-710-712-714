@@ -23,7 +23,7 @@ st.write("\n\n")
 # Check if the model is already in session state
 if 'model' not in st.session_state:
     # Load default model from a pickle file
-    default_model_path = '/mount/src/sed690-project2-running-group-704-710-712-714/default2.pkl'  # Replace with your model file path
+    default_model_path = '/mount/src/sed690-project2-running-group-704-710-712-714/default3.pkl'  # Replace with your model file path
     st.session_state.model = load_model(default_model_path)
     st.session_state.model_loaded = True
     st.success("Loaded default model.")
@@ -111,6 +111,10 @@ if st.session_state.get('model_loaded', False):
         if target_variable in label_encoders:
             # Decode the prediction using the label encoder
             prediction_label = label_encoders[target_variable].inverse_transform(prediction)[0]
+        elif prediction[0] == 0:
+            prediction_label = st.session_state.model['class0_label']
+        elif prediction[0] == 1:
+            prediction_label = st.session_state.model['class1_label']
         else:
             # If no label encoder, just use the raw prediction
             prediction_label = prediction[0]
