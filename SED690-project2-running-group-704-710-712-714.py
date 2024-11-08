@@ -63,7 +63,7 @@ if st.session_state.get('model_loaded', False):
     # Button for randomizing input to produce class 1
     if st.button("Randomize to Get Class 1"):
         found_class1 = False
-        attempt_limit = 100  # limit to avoid infinite loop
+        attempt_limit = 100000  # limit to avoid infinite loop
         attempt_count = 0
         
         while not found_class1 and attempt_count < attempt_limit:
